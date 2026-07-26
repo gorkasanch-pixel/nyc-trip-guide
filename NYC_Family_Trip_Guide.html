@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sanchez Line — NYC Family Trip Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0E1A;
+    --panel:#121828;
+    --panel-line:#232D48;
+    --chalk:#F4F1E8;
+    --chalk-dim:#A9AFC2;
+    --gold:#D4A537;
+    --d-line:#FF6319;
+    --seven-line:#B933AD;
+    --r-red:#EE352E;
+    --r-green:#00933C;
+    --r-blue:#0039A6;
+    --r-yellow:#FCCC0A;
+    --r-grey:#A7A9AC;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:64px;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--chalk);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:.03em;
+    margin:0 0 .3em 0;
+    font-weight:400;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  :focus-visible{
+    outline:3px solid var(--gold);
+    outline-offset:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- LAYOUT SHELLS ---------- */
+  .section{
+    max-width:1080px;
+    margin:0 auto;
+    padding:64px 24px;
+    border-bottom:1px solid var(--panel-line);
+  }
+  .section:last-of-type{border-bottom:none;}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .section-head h2{font-size:clamp(2.2rem, 5vw, 3rem); color:var(--chalk);}
+  .section-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.72rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid var(--gold);
+    border-radius:999px;
+    padding:4px 12px;
+  }
+  .lede{color:var(--chalk-dim); max-width:640px; margin:0 0 32px 0;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 24px 0 24px;
+    max-width:1080px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    font-size:.75rem;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(3rem, 10vw, 6.4rem);
+    line-height:.95;
+    color:var(--chalk);
+  }
+  .hero h1 span{color:var(--d-line);}
+  .hero .subhead{
+    color:var(--chalk-dim);
+    font-size:1.05rem;
+    margin:6px 0 8px 0;
+  }
+  .hero .subhead .mono{color:var(--chalk);}
+
+  /* subway diagram */
+  .map-wrap{ max-width:820px; margin:36px auto 8px auto; }
+  .map-wrap svg{ width:100%; height:auto; display:block; }
+  .map-line{
+    fill:none;
+    stroke-width:6;
+    stroke-linecap:round;
+  }
+  .map-line.gold{ stroke:var(--gold); stroke-dasharray:10 10; opacity:.85;}
+  .map-line.d{ stroke:var(--d-line); }
+  .map-line.seven{ stroke:var(--seven-line); }
+
+  .draw{
+    stroke-dasharray:1000;
+    stroke-dashoffset:1000;
+    animation:drawline 1.6s ease-out forwards;
+  }
+  .draw.gold{ stroke-dasharray:14 12; animation:none; }
+  @keyframes drawline{ to{ stroke-dashoffset:0; } }
+
+  .map-node{ cursor:pointer; }
+  .map-node circle.stop{
+    fill:var(--panel);
+    stroke:var(--chalk);
+    stroke-width:3;
+    transition:transform .15s ease, fill .15s ease;
+    transform-origin:center;
+  }
+  .map-node:hover circle.stop{ fill:var(--gold); transform:scale(1.15); }
+  .map-node text{
+    fill:var(--chalk);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:15px;
+    font-weight:600;
+  }
+  .map-node text.icon{ font-size:22px; }
+  .bullet-inline circle{ stroke:var(--ink); stroke-width:3; }
+  .bullet-inline text{ font-family:'IBM Plex Mono', monospace; font-weight:700; fill:#0A0E1A; font-size:14px; }
+
+  .quicknav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,14,26,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--panel-line);
+    margin-top:44px;
+  }
+  .quicknav-inner{
+    max-width:1080px; margin:0 auto;
+    display:flex; gap:4px; overflow-x:auto;
+    padding:10px 24px;
+  }
+  .quicknav button{
+    flex:0 0 auto;
+    background:none; border:none; color:var(--chalk-dim);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+    padding:8px 14px; border-radius:999px;
+    display:flex; align-items:center; gap:8px;
+    transition:color .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .quicknav button .dot{width:7px;height:7px;border-radius:50%; background:var(--gold); display:inline-block;}
+  .quicknav button:hover, .quicknav button.active{ color:var(--chalk); background:var(--panel); }
+
+  /* ---------- TICKET / SNAPSHOT CARDS ---------- */
+  .ticket-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
+    gap:20px;
+  }
+  .ticket{
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    padding:20px 20px 0 20px;
+    --accent:var(--gold);
+  }
+  .ticket .kicker{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  .ticket h3{ font-size:1.7rem; margin:4px 0 2px 0; color:var(--chalk);}
+  .ticket .detail{ color:var(--chalk-dim); font-size:.92rem; margin-bottom:18px; }
+  .ticket .detail strong{ color:var(--chalk); font-weight:600; }
+  .perf{
+    position:relative;
+    border-top:2px dashed rgba(244,241,232,.22);
+    margin:0 -0px;
+  }
+  .perf::before, .perf::after{
+    content:'';
+    position:absolute; top:-11px;
+    width:22px; height:22px; border-radius:50%;
+    background:var(--ink);
+  }
+  .perf::before{ left:-11px; }
+  .perf::after{ right:-11px; }
+  .ticket .stub{
+    padding:14px 0 16px 0;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .ticket .barcode{
+    height:26px; flex:1; margin-right:14px;
+    background:repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 5px, var(--accent) 5px 6px, transparent 6px 11px, var(--accent) 11px 14px, transparent 14px 17px);
+    opacity:.65;
+  }
+  .ticket .code{ font-family:'IBM Plex Mono', monospace; font-size:.72rem; color:var(--chalk-dim); }
+
+  /* ---------- TRANSIT ---------- */
+  .fare-note{
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:var(--radius);
+    padding:18px 22px;
+    margin-bottom:28px;
+    font-size:.94rem;
+    color:var(--chalk-dim);
+  }
+  .fare-note strong{color:var(--chalk);}
+  .route-tabs{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
+  .route-tab{
+    background:var(--panel); border:1px solid var(--panel-line); color:var(--chalk-dim);
+    padding:10px 18px; border-radius:999px; font-size:.88rem; font-weight:600;
+    display:flex; align-items:center; gap:10px;
+    transition:all .15s ease;
+  }
+  .route-tab .chip{ width:24px;height:24px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:.78rem; color:#0A0E1A;}
+  .route-tab[data-route="lga"] .chip{ background:var(--gold); }
+  .route-tab[data-route="yankees"] .chip{ background:var(--d-line); }
+  .route-tab[data-route="open"] .chip{ background:var(--seven-line); }
+  .route-tab.active{ color:var(--chalk); border-color:var(--chalk-dim); background:#1A2036; }
+
+  .route-panel{ display:none; }
+  .route-panel.active{ display:block; animation:fadein .25s ease; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .route-card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:var(--radius);
+    padding:26px 28px;
+  }
+  .route-card h3{ font-size:1.6rem; margin-bottom:4px; }
+  .route-card .route-meta{ color:var(--chalk-dim); font-size:.85rem; margin-bottom:18px; font-family:'IBM Plex Mono', monospace;}
+  .steps{ list-style:none; margin:0; padding:0; counter-reset:step; }
+  .steps li{
+    counter-increment:step;
+    position:relative;
+    padding:0 0 18px 42px;
+    border-left:2px solid var(--panel-line);
+    margin-left:11px;
+  }
+  .steps li:last-child{ border-color:transparent; padding-bottom:0; }
+  .steps li::before{
+    content:counter(step);
+    position:absolute; left:-13px; top:-2px;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--gold); color:var(--gold);
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:.8rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .route-card.d .steps li::before{ border-color:var(--d-line); color:var(--d-line); }
+  .route-card.seven .steps li::before{ border-color:var(--seven-line); color:var(--seven-line); }
+  .route-alt{ margin-top:16px; padding-top:16px; border-top:1px dashed var(--panel-line); color:var(--chalk-dim); font-size:.92rem;}
+  .route-alt strong{color:var(--chalk);}
+
+  /* ---------- ITINERARY ---------- */
+  .day-tabs{ display:flex; gap:10px; margin-bottom:26px; }
+  .day-tab{
+    background:var(--panel); border:1px solid var(--panel-line); color:var(--chalk-dim);
+    padding:12px 22px; border-radius:10px; font-size:.95rem; font-weight:600;
+  }
+  .day-tab .mono{display:block; font-size:.72rem; color:var(--gold); margin-top:2px;}
+  .day-tab.active{ color:var(--chalk); border-color:var(--gold); background:#1A2036; }
+
+  .day-panel{ display:none; }
+  .day-panel.active{ display:block; animation:fadein .25s ease; }
+
+  .timeline{ list-style:none; margin:0; padding:0; }
+  .timeline li{
+    display:grid;
+    grid-template-columns:88px 1fr;
+    gap:20px;
+    padding-bottom:26px;
+    position:relative;
+  }
+  .timeline li::before{
+    content:'';
+    position:absolute; left:98px; top:22px; bottom:-4px;
+    width:2px; background:var(--panel-line);
+  }
+  .timeline li:last-child::before{ display:none; }
+  .timeline .time{
+    font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--gold);
+    font-size:.85rem; padding-top:2px; text-align:right;
+  }
+  .timeline .event{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:12px;
+    padding:16px 20px; position:relative;
+  }
+  .timeline .event::before{
+    content:''; position:absolute; left:-26px; top:20px;
+    width:12px; height:12px; border-radius:50%;
+    background:var(--gold); border:2px solid var(--ink);
+  }
+  .timeline .event.d::before{ background:var(--d-line); }
+  .timeline .event.seven::before{ background:var(--seven-line); }
+  .timeline .event h4{ margin:0 0 4px 0; font-size:1.05rem; font-family:'IBM Plex Sans'; font-weight:600; color:var(--chalk); }
+  .timeline .event p{ margin:0; color:var(--chalk-dim); font-size:.92rem; }
+  .badge-row{ margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+
+  /* ---------- FILTER CHIPS + CARDS ---------- */
+  .filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  .chip{
+    background:var(--panel); border:1px solid var(--panel-line); color:var(--chalk-dim);
+    padding:8px 16px; border-radius:999px; font-size:.85rem; font-weight:600;
+  }
+  .chip.active{ background:var(--gold); color:#0A0E1A; border-color:var(--gold); }
+  .count-note{ color:var(--chalk-dim); font-size:.82rem; margin:10px 0 26px 0; font-family:'IBM Plex Mono', monospace;}
+
+  .card-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:18px; }
+  .place-card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:var(--radius);
+    padding:20px; display:flex; flex-direction:column; gap:10px;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .place-card:hover{ transform:translateY(-3px); border-color:var(--chalk-dim); }
+  .place-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .place-card h4{ margin:0; font-size:1.15rem; color:var(--chalk); font-family:'IBM Plex Sans'; font-weight:700; }
+  .price{ font-family:'IBM Plex Mono', monospace; color:var(--gold); font-size:.82rem; white-space:nowrap; }
+  .place-hood{ font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace;}
+  .place-desc{ font-size:.9rem; color:var(--chalk-dim); }
+  .place-tip{ font-size:.85rem; color:var(--chalk); border-left:2px solid var(--gold); padding-left:10px; }
+  .lines-row{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-top:2px; }
+  .bullet{
+    width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:.72rem;
+    color:#0A0E1A; flex:0 0 auto;
+  }
+  .walk-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:.72rem; color:var(--chalk-dim);
+    border:1px solid var(--panel-line); border-radius:999px; padding:3px 10px;
+  }
+  .bullet.red{background:var(--r-red);} .bullet.green{background:var(--r-green);}
+  .bullet.purple{background:var(--seven-line);} .bullet.blue{background:var(--r-blue);}
+  .bullet.orange{background:var(--d-line);} .bullet.yellow{background:var(--r-yellow);}
+  .bullet.grey{background:var(--r-grey);}
+
+  /* ---------- CHECKLIST ---------- */
+  .tips-head{ display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+  #tipCounter{ font-family:'IBM Plex Mono', monospace; color:var(--gold); font-size:.9rem;}
+  .checklist{ list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+  .checklist li{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:12px;
+    padding:16px 18px; display:flex; gap:14px; align-items:flex-start;
+  }
+  .checklist input[type=checkbox]{
+    width:20px; height:20px; margin-top:2px; accent-color:var(--gold); flex:0 0 auto;
+  }
+  .checklist label strong{ display:block; color:var(--chalk); margin-bottom:2px; }
+  .checklist label span{ color:var(--chalk-dim); font-size:.9rem; }
+  .checklist li.done{ opacity:.5; }
+  .checklist li.done label strong{ text-decoration:line-through; }
+
+  footer{
+    text-align:center; padding:40px 24px 60px 24px;
+    color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:.78rem;
+  }
+
+  @media (max-width:640px){
+    .timeline li{ grid-template-columns:60px 1fr; gap:12px; }
+    .timeline li::before{ left:70px; }
+    .timeline .event::before{ left:-18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="eyebrow">A family trip, two train lines, one weekend</p>
+  <h1>THE SANCHEZ <span>LINE</span></h1>
+  <p class="subhead">Omaha → New York &nbsp;·&nbsp; <span class="mono">Sat Aug 29 – Sun Aug 30, 2026</span></p>
+
+  <div class="map-wrap">
+    <svg viewBox="0 0 800 380" role="img" aria-label="Map of the trip: LaGuardia Airport to the Marriott Marquis by car, then the D train to Yankee Stadium and the 7 train to the US Open">
+      <!-- connecting lines -->
+      <path class="map-line gold draw" d="M140,80 C220,110 320,150 400,190" />
+      <path class="map-line d draw" d="M400,190 C480,150 580,120 660,100" />
+      <path class="map-line seven draw" d="M400,190 C480,230 580,270 660,300" />
+
+      <!-- inline bullets on lines -->
+      <g class="bullet-inline">
+        <circle cx="520" cy="150" r="16" fill="#FF6319"/>
+        <text x="520" y="155" text-anchor="middle">D</text>
+      </g>
+      <g class="bullet-inline">
+        <circle cx="520" cy="235" r="16" fill="#B933AD"/>
+        <text x="520" y="240" text-anchor="middle">7</text>
+      </g>
+
+      <!-- LGA node -->
+      <g class="map-node" data-scroll="#transit" data-route="lga">
+        <circle class="stop" cx="140" cy="80" r="26"/>
+        <text class="icon" x="140" y="88" text-anchor="middle">✈</text>
+        <text x="140" y="125" text-anchor="middle">LGA</text>
+      </g>
+
+      <!-- Hub node -->
+      <g class="map-node" data-scroll="#snapshot">
+        <circle class="stop" cx="400" cy="190" r="30" stroke="#D4A537"/>
+        <text class="icon" x="400" y="198" text-anchor="middle">★</text>
+        <text x="400" y="238" text-anchor="middle">MARRIOTT</text>
+        <text x="400" y="255" text-anchor="middle">MARQUIS</text>
+      </g>
+
+      <!-- Yankee Stadium node -->
+      <g class="map-node" data-scroll="#transit" data-route="yankees">
+        <circle class="stop" cx="660" cy="100" r="28" stroke="#FF6319"/>
+        <text class="icon" x="660" y="108" text-anchor="middle">⚾</text>
+        <text x="660" y="146" text-anchor="middle">YANKEE</text>
+        <text x="660" y="163" text-anchor="middle">STADIUM</text>
+      </g>
+
+      <!-- US Open node -->
+      <g class="map-node" data-scroll="#transit" data-route="open">
+        <circle class="stop" cx="660" cy="300" r="28" stroke="#B933AD"/>
+        <text class="icon" x="660" y="308" text-anchor="middle">🎾</text>
+        <text x="660" y="346" text-anchor="middle">US OPEN</text>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<nav class="quicknav">
+  <div class="quicknav-inner" id="quicknav">
+    <button data-target="#snapshot" class="active"><span class="dot"></span>Snapshot</button>
+    <button data-target="#transit"><span class="dot"></span>Transit</button>
+    <button data-target="#itinerary"><span class="dot"></span>Itinerary</button>
+    <button data-target="#eat"><span class="dot"></span>Eat</button>
+    <button data-target="#see"><span class="dot"></span>See</button>
+    <button data-target="#tips"><span class="dot"></span>Tips</button>
+  </div>
+</nav>
+
+<!-- ================= SNAPSHOT ================= -->
+<section class="section" id="snapshot">
+  <div class="section-head">
+    <h2>Trip Snapshot</h2>
+    <span class="section-tag">4 stubs</span>
+  </div>
+  <div class="ticket-row">
+
+    <div class="ticket" style="--accent:var(--gold)">
+      <div class="kicker">Outbound Flight</div>
+      <h3>OMA → LGA</h3>
+      <div class="detail">Sat Aug 29 · Departs <strong>10:15 AM</strong> · Arrives <strong>2:00 PM</strong><br>Direct flight</div>
+      <div class="perf"></div>
+      <div class="stub"><div class="barcode"></div><div class="code">OMA·LGA</div></div>
+    </div>
+
+    <div class="ticket" style="--accent:var(--gold)">
+      <div class="kicker">Home Base</div>
+      <h3>Marriott Marquis</h3>
+      <div class="detail"><strong>1535 Broadway</strong>, Times Square<br>Check-in on arrival day</div>
+      <div class="perf"></div>
+      <div class="stub"><div class="barcode"></div><div class="code">TSQ·NYC</div></div>
+    </div>
+
+    <div class="ticket" style="--accent:var(--d-line)">
+      <div class="kicker">Event 01 · D Train</div>
+      <h3>Yankees vs. Red Sox</h3>
+      <div class="detail">Yankee Stadium · Sat Aug 29<br>First pitch <strong>7:15 PM</strong></div>
+      <div class="perf"></div>
+      <div class="stub"><div class="barcode"></div><div class="code">NYY·BOS</div></div>
+    </div>
+
+    <div class="ticket" style="--accent:var(--seven-line)">
+      <div class="kicker">Event 02 · 7 Train</div>
+      <h3>US Open — Day 1</h3>
+      <div class="detail">Flushing Meadows · Sun Aug 30<br>Main draw opening day</div>
+      <div class="perf"></div>
+      <div class="stub"><div class="barcode"></div><div class="code">USTA·26</div></div>
+    </div>
+
+  </div>
+  <p class="lede" style="margin-top:26px;">Two pieces of good news on timing: the Yankees are <strong style="color:var(--chalk)">home</strong> the night you land, and this year's US Open main draw starts on a <strong style="color:var(--chalk)">Sunday</strong> for the first time — so August 30th is opening day of real tournament tennis, not a Fan Week preview.</p>
+</section>
+
+<!-- ================= TRANSIT ================= -->
+<section class="section" id="transit">
+  <div class="section-head">
+    <h2>Getting Around</h2>
+    <span class="section-tag">3 routes</span>
+  </div>
+  <div class="fare-note">
+    <strong>NYC subway fares (2026):</strong> flat $3.00/ride via OMNY — just tap a contactless card or phone at the turnstile, no advance purchase needed. Kids 5–17 ride for $1.00 when tapping in with a paying adult. Fares cap automatically at $35/person per rolling 7-day period on the same card.
+  </div>
+
+  <div class="route-tabs" id="routeTabs">
+    <button class="route-tab active" data-route="lga"><span class="chip">🚕</span>LGA → Hotel</button>
+    <button class="route-tab" data-route="yankees"><span class="chip">D</span>Hotel → Yankee Stadium</button>
+    <button class="route-tab" data-route="open"><span class="chip">7</span>Hotel → US Open</button>
+  </div>
+
+  <div class="route-panel active" data-panel="lga">
+    <div class="route-card">
+      <h3>LaGuardia → Marriott Marquis</h3>
+      <div class="route-meta">~25–40 MIN · TAXI / RIDESHARE RECOMMENDED</div>
+      <p style="color:var(--chalk-dim); font-size:.94rem;">With four people and luggage landing at 2 PM, a taxi or rideshare (roughly $40–65) is the simplest option. A subway/bus combination exists but involves a transfer — not worth the hassle with bags on arrival day.</p>
+    </div>
+  </div>
+
+  <div class="route-panel" data-panel="yankees">
+    <div class="route-card d">
+      <h3>Marriott Marquis → Yankee Stadium</h3>
+      <div class="route-meta">~20–25 MIN · D TRAIN · LEAVE BY 6:00 PM</div>
+      <ol class="steps">
+        <li>Walk ~5 minutes to <strong>47-50 Sts–Rockefeller Center</strong> (B/D/F/M, on 6th Ave at 50th St).</li>
+        <li>Take the <strong>D train uptown</strong>, toward Norwood–205 St.</li>
+        <li>Ride to <strong>161 St–Yankee Stadium</strong> — the stadium is right across the street.</li>
+      </ol>
+      <div class="route-alt"><strong>Alternative:</strong> walk to Times Sq–42 St, take the free S shuttle to Grand Central, then the 4 train uptown to the same 161 St–Yankee Stadium stop.</div>
+    </div>
+  </div>
+
+  <div class="route-panel" data-panel="open">
+    <div class="route-card seven">
+      <h3>Marriott Marquis → USTA Billie Jean King National Tennis Center</h3>
+      <div class="route-meta">~25–30 MIN · 7 TRAIN, NO TRANSFER · LEAVE BY 10:00–10:15 AM</div>
+      <ol class="steps">
+        <li>Walk to <strong>Times Sq–42 St</strong> station.</li>
+        <li>Take the <strong>7 train</strong> toward Flushing–Main St.</li>
+        <li>Ride to <strong>Mets–Willets Point</strong> — you'll walk directly into the grounds.</li>
+      </ol>
+      <div class="route-alt"><strong>Bag policy:</strong> max ~12"×12"×16", no glass bottles. Empty refillable bottles are fine — free water refill stations are on the grounds.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ITINERARY ================= -->
+<section class="section" id="itinerary">
+  <div class="section-head">
+    <h2>Day by Day</h2>
+    <span class="section-tag">2 days</span>
+  </div>
+
+  <div class="day-tabs">
+    <button class="day-tab active" data-day="1">Day 1<span class="mono">SAT AUG 29</span></button>
+    <button class="day-tab" data-day="2">Day 2<span class="mono">SUN AUG 30</span></button>
+  </div>
+
+  <div class="day-panel active" data-day="1">
+    <ul class="timeline">
+      <li><div class="time">2:00 PM</div><div class="event"><h4>Land at LGA</h4><p>Taxi or rideshare to the Marriott Marquis, check in.</p></div></li>
+      <li><div class="time">3:30 PM</div><div class="event"><h4>First taste of the city</h4><p>Steps from the hotel — walk Times Square, or ride up to Top of the Rock (10-min walk) for a first skyline view.</p></div></li>
+      <li><div class="time">5:30 PM</div><div class="event"><h4>Early dinner near the hotel</h4><p>Tony's Di Napoli or Carmine's — festive, big-portion, family-style Italian, both a few blocks away.</p></div></li>
+      <li><div class="time">6:00 PM</div><div class="event d"><h4>Head to the subway</h4><p>D train from 47-50 Sts–Rockefeller Center, direct to 161 St–Yankee Stadium.</p><div class="badge-row"><span class="bullet orange">D</span></div></div></li>
+      <li><div class="time">7:15 PM</div><div class="event d"><h4>First pitch</h4><p>Yankees vs. Red Sox at Yankee Stadium.</p></div></li>
+    </ul>
+  </div>
+
+  <div class="day-panel" data-day="2">
+    <ul class="timeline">
+      <li><div class="time">10:00 AM</div><div class="event seven"><h4>Leave the hotel</h4><p>7 train from Times Sq–42 St, direct to Mets–Willets Point.</p><div class="badge-row"><span class="bullet purple">7</span></div></div></li>
+      <li><div class="time">11:00 AM</div><div class="event seven"><h4>Day session begins</h4><p>US Open opening day of the main draw. With kids, the outer courts (Grandstand, Court 17, practice courts) are often more engaging than a long sit in Arthur Ashe.</p></div></li>
+      <li><div class="time">Midday</div><div class="event"><h4>Optional break in the park</h4><p>The Unisphere and New York Hall of Science are both a short walk from the grounds — good for a change of pace between matches.</p></div></li>
+      <li><div class="time">Evening</div><div class="event"><h4>Dinner in Flushing</h4><p>One stop past the tennis center on the 7 train — one of the best food neighborhoods in the city.</p></div></li>
+    </ul>
+  </div>
+
+  <p class="lede" style="margin-top:8px;">If your trip extends beyond the 30th, the Eat and See sections below are organized by neighborhood so you can build out additional days easily.</p>
+</section>
+
+<!-- ================= EAT ================= -->
+<section class="section" id="eat">
+  <div class="section-head">
+    <h2>Where to Eat</h2>
+    <span class="section-tag" id="eatCount">27 spots</span>
+  </div>
+  <p class="lede">Filter by neighborhood — each card shows the subway line to ride, or a walk tag if it's an easy stroll from the hotel.</p>
+  <div class="filter-row" id="eatFilters"></div>
+  <div class="count-note" id="eatCountNote"></div>
+  <div class="card-grid" id="eatGrid"></div>
+</section>
+
+<!-- ================= SEE ================= -->
+<section class="section" id="see">
+  <div class="section-head">
+    <h2>Places to See & Do</h2>
+    <span class="section-tag" id="seeCount">14 spots</span>
+  </div>
+  <p class="lede">Same idea — filter by neighborhood to plan around whichever day you're building.</p>
+  <div class="filter-row" id="seeFilters"></div>
+  <div class="count-note" id="seeCountNote"></div>
+  <div class="card-grid" id="seeGrid"></div>
+</section>
+
+<!-- ================= TIPS ================= -->
+<section class="section" id="tips">
+  <div class="tips-head">
+    <h2>Practical Notes</h2>
+    <span id="tipCounter" class="mono">0 / 5 checked</span>
+  </div>
+  <ul class="checklist" id="checklist"></ul>
+</section>
+
+<footer>
+  THE SANCHEZ LINE &nbsp;·&nbsp; OMA – LGA &nbsp;·&nbsp; AUG 29–30, 2026 &nbsp;·&nbsp; NEXT STOP: NEW YORK
+</footer>
+
+<script>
+/* ---------------- DATA ---------------- */
+const LINE_COLOR = {
+  '1':'red','2':'red','3':'red',
+  '4':'green','5':'green','6':'green',
+  '7':'purple',
+  'A':'blue','C':'blue','E':'blue',
+  'B':'orange','D':'orange','F':'orange','M':'orange',
+  'N':'yellow','Q':'yellow','R':'yellow','W':'yellow',
+  'S':'grey'
+};
+
+const restaurants = [
+  {name:"Tony's Di Napoli", hood:"Times Square", walk:true, price:"$$", type:"Italian, family-style", desc:"Classic red-sauce Italian in big, shareable portions. Lively and loud — a fun first NYC dinner. Reservations recommended.", tip:"Rigatoni Bolognese and shrimp diavolo are standouts."},
+  {name:"Carmine's (44th St)", hood:"Times Square", walk:true, price:"$$", type:"Italian, family-style", desc:"Similar format to Tony's, arguably even bigger portions. One of the busiest restaurants in the neighborhood.", tip:"Order fewer dishes than you think you need — portions are enormous."},
+  {name:"Ellen's Stardust Diner", hood:"Times Square", walk:true, price:"$$", type:"American diner", desc:"Servers are Broadway performers who sing between taking orders. Expect a 20–25 min line that moves.", tip:"A guaranteed hit with kids — classic diner food plus a show."},
+  {name:"Junior's Restaurant & Bakery", hood:"Times Square", walk:true, price:"$$", type:"American diner", desc:"Home of what many New Yorkers consider the best cheesecake in the city, plus a full diner menu.", tip:"Corned beef sandwich and matzo ball soup are well reviewed."},
+  {name:"Sugar Factory", hood:"Times Square", walk:true, price:"$$$", type:"American / dessert", desc:"Over-the-top milkshakes and candy-themed decor — exciting for kids, though reviews are mixed on value.", tip:"Treat it as a special dessert stop rather than a full dinner."},
+  {name:"Times Square Diner & Grill", hood:"Times Square", walk:true, price:"$", type:"Diner", desc:"No-frills breakfast spot a few blocks from the hotel — big portions, fast, reasonable prices.", tip:"Good option the morning you head to the US Open."},
+  {name:"Joe's Pizza (Broadway)", hood:"Times Square", walk:true, price:"$", type:"Pizza", desc:"The classic NY slice experience, right in the Theater District.", tip:"Expect a line but it moves fast — order-and-go rather than sit-down."},
+
+  {name:"Billy's Sports Bar", hood:"Yankee Stadium", lines:["4","B","D"], price:"$$", type:"Sports bar", desc:"The go-to pre-game spot, literally across from the stadium — high energy, DJ, wings and fries.", tip:"Arrive a few hours before first pitch if you want a table."},
+  {name:"Porto Salvo", hood:"Yankee Stadium", lines:["4","B","D"], price:"$$", type:"Italian / pizza / seafood", desc:"A more low-key, sit-down option a short walk from the stadium with a calmer atmosphere.", tip:"Reviewers say the pizza is a hit with kids."},
+  {name:"Hibachi Grill & Supreme Buffet", hood:"Yankee Stadium", lines:["4","B","D"], price:"$", type:"Asian buffet", desc:"All-you-can-eat (sushi, hibachi, Chinese-American, dessert) for around $20–25/person.", tip:"Practical if you want variety without waiting for table service before a 7:15 game."},
+  {name:"161 Bar & Grill", hood:"Yankee Stadium", lines:["4","B","D"], price:"$$", type:"Bar & grill", desc:"Casual, no-frills spot near the stadium with a happy hour.", tip:"Good for a quick bite if you just need something fast before heading in."},
+
+  {name:"Nan Xiang Soup Dumplings", hood:"Flushing", lines:["7"], price:"$", type:"Shanghainese", desc:"The most famous soup dumpling spot in Flushing, often compared favorably to Din Tai Fung.", tip:"Use the QR-code virtual queue — it gets busy weekend afternoons. Kids love the Shanghainese noodles."},
+  {name:"GAN-HOO BBQ", hood:"Flushing", lines:["7"], price:"$$", type:"Korean BBQ", desc:"Extremely highly rated (4.9). All-you-can-eat before 4:30 PM for around $40/person.", tip:"Fun, interactive, cook-it-yourself meal — great for a family."},
+  {name:"JUQI", hood:"Flushing", lines:["7"], price:"$", type:"Peking duck specialist", desc:"Known for Peking duck with a full tableside carving presentation.", tip:"Reviewers specifically note staff accommodating families with kids well."},
+  {name:"CHELI Flushing", hood:"Flushing", lines:["7"], price:"$$", type:"Cantonese / dim sum", desc:"Upscale, beautifully decorated in a traditional Chinese garden aesthetic.", tip:"Reservations recommended for dinner."},
+  {name:"Jiang Nan", hood:"Flushing", lines:["7"], price:"$$", type:"Chinese fusion", desc:"Elegant option known for Peking duck and a flambéed cumin lamb dish served tableside.", tip:"The tableside flambé is a fun bit of theater for kids."},
+  {name:"Shoo Loong Kan", hood:"Flushing", lines:["7"], price:"$$", type:"Sichuan / Chongqing hot pot", desc:"Spicy hot pot with a huge range of proteins and vegetables. One of the most popular hot pot spots in the neighborhood.", tip:"They provide aprons — a nice touch with kids at the table. Expect a wait."},
+
+  {name:"The Viand", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Diner", desc:"A true classic NYC diner, popular for family weekend brunch.", tip:"Straightforward American food, big portions, reliable."},
+  {name:"Fred's", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"American", desc:"Casual neighborhood spot, notably accommodating for food allergies.", tip:"Kid-friendly mac and cheese on the menu."},
+  {name:"Playa Betty's", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Mexican", desc:"Lively, colorful Mexican spot with outdoor seating in good weather.", tip:"Tacos, elote (Mexican street corn), solid margaritas for the adults."},
+  {name:"Carmine's (Upper West Side)", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Italian, family-style", desc:"Same reliable family-style format as the Times Square location, uptown.", tip:"Good if you're spending the day at the Museum of Natural History or Central Park."},
+
+  {name:"Hudson Eats", hood:"Battery Park", lines:["4","5","R","W"], price:"$", type:"Food hall", desc:"Wide variety of vendors from BBQ to Mexican to bakery, with harborside seating.", tip:"Great with kids because everyone can pick something different."},
+  {name:"P.J. Clarke's on the Hudson", hood:"Battery Park", lines:["4","5","R","W"], price:"$$", type:"American / burgers", desc:"Classic burgers right on the marina; reliably good food.", tip:"Can get loud at peak times."},
+  {name:"Mezze on the River", hood:"Battery Park", lines:["4","5","R","W"], price:"$$", type:"Mediterranean / Greek", desc:"Waterfront Mediterranean with river views — a nice change of pace.", tip:"A calmer option than the more typical American/Italian choices nearby."},
+
+  {name:"John's of Bleecker Street", hood:"Essential Pizza", lines:["A","C","E"], price:"$$", type:"Pizza (West Village)", desc:"Coal-fired, whole pies only (no slices) — classic and consistently excellent.", tip:"Near W 4th St station."},
+  {name:"Lombardi's", hood:"Essential Pizza", lines:["6"], price:"$$", type:"Pizza (Nolita)", desc:"Widely credited as America's first pizzeria (1905) — historic atmosphere.", tip:"Cash-only culture; near Spring St station."},
+  {name:"NY Pizza Suprema", hood:"Essential Pizza", lines:["A","C","E"], price:"$", type:"Pizza (near Penn Station)", desc:"A real neighborhood favorite since 1964, excellent value.", tip:"Near 34 St–Penn Station — good if you're near Madison Square Garden."}
+];
+
+const attractions = [
+  {name:"Top of the Rock", hood:"Midtown", walk:true, type:"Observation deck", desc:"360° skyline view that — unlike the Empire State Building — includes the Empire State Building in the shot.", tip:"10-minute walk from the hotel; usually the more photogenic option for families."},
+  {name:"Intrepid Sea, Air & Space Museum", hood:"Midtown", walk:true, type:"Museum / aircraft carrier", desc:"A real decommissioned aircraft carrier you walk through, plus a submarine, a space shuttle, and a Concorde.", tip:"Especially great for kids roughly 8 and up; easily fills half a day."},
+  {name:"Empire State Building", hood:"Midtown", walk:true, type:"Observation deck", desc:"The other classic observation deck — Art Deco interior, 86th-floor open-air deck.", tip:"Buy timed tickets in advance to skip a longer wait."},
+  {name:"Broadway show", hood:"Midtown", walk:true, type:"Theater", desc:"The TKTS booth in Times Square sells same-day discounted tickets.", tip:"Worth checking if a family-friendly show has same-day availability."},
+
+  {name:"American Museum of Natural History", hood:"Upper West Side", lines:["B","C"], type:"Museum", desc:"Dinosaur halls, the suspended blue whale, gems and minerals, and the Hayden Planetarium.", tip:"An easy full-day visit — go early, it doesn't open until 10 AM and lines can build."},
+  {name:"Central Park Zoo", hood:"Upper West Side", lines:["N","Q","R","W"], type:"Zoo", desc:"Compact (1–2 hours) — easier to manage with younger kids than a full-day zoo.", tip:"Grizzly bears, snow leopards, and a tropical rainforest building are highlights."},
+  {name:"Central Park", hood:"Upper West Side", walk:true, type:"Park", desc:"Bike rentals, the Central Park Carousel, rowboats at Loeb Boathouse, Bethesda Terrace.", tip:"Great for a free afternoon if the schedule opens up."},
+
+  {name:"Unisphere", hood:"Flushing Meadows", lines:["7"], type:"Landmark", desc:"The giant stainless-steel globe built for the 1964 World's Fair.", tip:"A short walk from the tennis center gates — a great photo stop between matches."},
+  {name:"New York Hall of Science", hood:"Flushing Meadows", lines:["7"], type:"Science museum", desc:"Hands-on science museum a short walk from the tennis center.", tip:"Reviewers call it great for a range of ages, with a well-liked bubble exhibit for younger kids."},
+
+  {name:"Statue of Liberty & Ellis Island Ferry", hood:"Downtown", lines:["4","5","R","W"], type:"Ferry / landmark", desc:"The only official ferry that lands on both islands.", tip:"Go early (8:30–9 AM) to beat crowds; the full round trip takes about 4 hours."},
+  {name:"9/11 Memorial & Museum", hood:"Downtown", lines:["E","R","W"], type:"Memorial / museum", desc:"A powerful, well-curated memorial and museum.", tip:"Emotionally heavy — more appropriate for older kids/teens. The reflecting pools alone are moving to see."},
+  {name:"Brooklyn Bridge + DUMBO", hood:"Downtown", lines:["4","5","6"], type:"Walk / neighborhood", desc:"Walk the bridge from the Manhattan side, end up in DUMBO for the classic Manhattan Bridge photo spot.", tip:"Jane's Carousel and waterfront views of the skyline are highlights."},
+  {name:"High Line + Chelsea Market", hood:"Downtown", lines:["A","C","E"], type:"Park / market", desc:"An elevated park on a former rail line, ending near Chelsea Market's indoor food hall.", tip:"Good for an easy, walkable afternoon with a built-in lunch stop."},
+
+  {name:"Bronx Zoo", hood:"Bronx", lines:["2","5"], type:"Zoo", desc:"The largest metropolitan zoo in the country.", tip:"Genuinely a full-day destination on its own — plan a separate day rather than pairing with the Yankees game."}
+];
+
+/* ---------------- RENDER HELPERS ---------------- */
+function bulletHTML(lines){
+  return lines.map(l => `<span class="bullet ${LINE_COLOR[l]||'grey'}">${l}</span>`).join('');
+}
+
+function cardHTML(item){
+  const linesRow = item.walk
+    ? `<span class="walk-tag">🚶 Walkable from hotel</span>`
+    : `<div class="lines-row">${bulletHTML(item.lines)}</div>`;
+  return `
+    <div class="place-card" data-hood="${item.hood}">
+      <div class="place-top">
+        <h4>${item.name}</h4>
+        ${item.price ? `<span class="price">${item.price}</span>` : ''}
+      </div>
+      <div class="place-hood">${item.hood} · ${item.type}</div>
+      ${linesRow}
+      <div class="place-desc">${item.desc}</div>
+      <div class="place-tip">${item.tip}</div>
+    </div>`;
+}
+
+function buildFilters(containerId, gridId, data, countNoteId){
+  const hoods = ["All", ...new Set(data.map(d => d.hood))];
+  const container = document.getElementById(containerId);
+  container.innerHTML = hoods.map((h,i) => `<button class="chip ${i===0?'active':''}" data-hood="${h}">${h}</button>`).join('');
+
+  function render(hood){
+    const filtered = hood === "All" ? data : data.filter(d => d.hood === hood);
+    document.getElementById(gridId).innerHTML = filtered.map(cardHTML).join('');
+    document.getElementById(countNoteId).textContent = `Showing ${filtered.length} of ${data.length}`;
+  }
+  render("All");
+
+  container.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      render(chip.dataset.hood);
+    });
+  });
+}
+
+buildFilters('eatFilters','eatGrid', restaurants, 'eatCountNote');
+buildFilters('seeFilters','seeGrid', attractions, 'seeCountNote');
+
+/* ---------------- CHECKLIST ---------------- */
+const tips = [
+  {title:"Pack for the heat", body:"Late August in NYC is typically hot and humid, often 80s°F — sunscreen and water bottles matter most for the US Open day session."},
+  {title:"US Open bag policy", body:"Max ~12\"×12\"×16\", no glass bottles. Empty refillable bottles are fine — free water refill stations are on the grounds."},
+  {title:"Tap the same card every ride", body:"Use the same contactless card or phone each time to take advantage of the $35/person weekly OMNY fare cap."},
+  {title:"Book Times Square dinner ahead", body:"Tony's Di Napoli and Carmine's fill up fast, especially pre-theater — call ahead or reserve online."},
+  {title:"Book Flushing dinner ahead", body:"CHELI and Jiang Nan are worth reserving for dinner, especially on weekends."}
+];
+const list = document.getElementById('checklist');
+list.innerHTML = tips.map((t,i) => `
+  <li data-i="${i}">
+    <input type="checkbox" id="tip${i}">
+    <label for="tip${i}"><strong>${t.title}</strong><span>${t.body}</span></label>
+  </li>`).join('');
+
+function updateCounter(){
+  const total = tips.length;
+  const checked = list.querySelectorAll('input:checked').length;
+  document.getElementById('tipCounter').textContent = `${checked} / ${total} checked`;
+}
+list.querySelectorAll('input[type=checkbox]').forEach(box => {
+  box.addEventListener('change', () => {
+    box.closest('li').classList.toggle('done', box.checked);
+    updateCounter();
+  });
+});
+updateCounter();
+
+/* ---------------- ROUTE TABS ---------------- */
+document.querySelectorAll('.route-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.route-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.route-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.route-panel[data-panel="${tab.dataset.route}"]`).classList.add('active');
+  });
+});
+
+/* ---------------- DAY TABS ---------------- */
+document.querySelectorAll('.day-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.day-panel[data-day="${tab.dataset.day}"]`).classList.add('active');
+  });
+});
+
+/* ---------------- SCROLL NAV ---------------- */
+function goTo(targetSel, route){
+  document.querySelector(targetSel).scrollIntoView({behavior:'smooth', block:'start'});
+  if(route){
+    const tab = document.querySelector(`.route-tab[data-route="${route}"]`);
+    if(tab) tab.click();
+  }
+}
+document.querySelectorAll('.quicknav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.quicknav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    goTo(btn.dataset.target);
+  });
+});
+document.querySelectorAll('.map-node').forEach(node => {
+  node.addEventListener('click', () => goTo(node.dataset.scroll, node.dataset.route));
+});
+
+/* highlight active quicknav on scroll */
+const sections = ['#snapshot','#transit','#itinerary','#eat','#see','#tips'].map(id => document.querySelector(id));
+const navButtons = document.querySelectorAll('.quicknav button');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      const id = '#' + entry.target.id;
+      navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+    }
+  });
+}, {rootMargin:'-45% 0px -50% 0px'});
+sections.forEach(s => s && observer.observe(s));
+</script>
+</body>
+</html>
