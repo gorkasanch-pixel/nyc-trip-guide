@@ -112,7 +112,7 @@
   .hero .subhead .mono{color:var(--chalk);}
 
   /* subway diagram */
-  .map-wrap{ max-width:820px; margin:36px auto 8px auto; }
+  .map-wrap{ max-width:960px; margin:36px auto 8px auto; }
   .map-wrap svg{ width:100%; height:auto; display:block; }
   .map-line{
     fill:none;
@@ -122,13 +122,18 @@
   .map-line.gold{ stroke:var(--gold); stroke-dasharray:10 10; opacity:.85;}
   .map-line.d{ stroke:var(--d-line); }
   .map-line.seven{ stroke:var(--seven-line); }
+  .map-line.red{ stroke:var(--r-red); }
+  .map-line.blue{ stroke:var(--r-blue); }
+  .map-line.green{ stroke:var(--r-green); }
+  .map-line.trunk{ stroke:var(--gold); }
+  .map-line.optional{ stroke-dasharray:10 10; opacity:.8; }
 
   .draw{
     stroke-dasharray:1000;
     stroke-dashoffset:1000;
     animation:drawline 1.6s ease-out forwards;
   }
-  .draw.gold{ stroke-dasharray:14 12; animation:none; }
+  .draw.gold, .draw.optional{ stroke-dasharray:14 12; animation:none; }
   @keyframes drawline{ to{ stroke-dashoffset:0; } }
 
   .map-node{ cursor:pointer; }
@@ -149,6 +154,9 @@
   .map-node text.icon{ font-size:22px; }
   .bullet-inline circle{ stroke:var(--ink); stroke-width:3; }
   .bullet-inline text{ font-family:'IBM Plex Mono', monospace; font-weight:700; fill:#0A0E1A; font-size:14px; }
+  .bullet-inline.small text{ font-size:11px; }
+  .map-node.sub text{ font-size:12px; }
+  .map-node.sub text.icon{ font-size:16px; }
 
   .quicknav{
     position:sticky; top:0; z-index:50;
@@ -359,7 +367,7 @@
   .bullet.red{background:var(--r-red);} .bullet.green{background:var(--r-green);}
   .bullet.purple{background:var(--seven-line);} .bullet.blue{background:var(--r-blue);}
   .bullet.orange{background:var(--d-line);} .bullet.yellow{background:var(--r-yellow);}
-  .bullet.grey{background:var(--r-grey);}
+  .bullet.grey{background:var(--r-grey);} .bullet.brown{background:#996633;}
 
   /* ---------- CHECKLIST ---------- */
   .tips-head{ display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
@@ -397,50 +405,126 @@
   <p class="subhead">Omaha → New York &nbsp;·&nbsp; <span class="mono">Sat Aug 29 – Tue Sep 1, 2026</span></p>
 
   <div class="map-wrap">
-    <svg viewBox="0 0 800 380" role="img" aria-label="Map of the trip: LaGuardia Airport to the Marriott Marquis by car, then the D train to Yankee Stadium and the 7 train to the US Open">
-      <!-- connecting lines -->
-      <path class="map-line gold draw" d="M140,80 C220,110 320,150 400,190" />
-      <path class="map-line d draw" d="M400,190 C480,150 580,120 660,100" />
-      <path class="map-line seven draw" d="M400,190 C480,230 580,270 660,300" />
+    <svg viewBox="0 0 1000 980" role="img" aria-label="Detailed map of the trip: the Marriott Marquis as the hub, with spokes to Yankee Stadium, the US Open and Flushing food, the Upper West Side and Central Park, Battery Park and the Statue of Liberty, a bonus Bronx Zoo spoke, and a Worth the Trip cluster covering Katz's Deli, pizza, and ice cream, plus LaGuardia by car">
 
-      <!-- inline bullets on lines -->
-      <g class="bullet-inline">
-        <circle cx="520" cy="150" r="16" fill="#FF6319"/>
-        <text x="520" y="155" text-anchor="middle">D</text>
-      </g>
-      <g class="bullet-inline">
-        <circle cx="520" cy="235" r="16" fill="#B933AD"/>
-        <text x="520" y="240" text-anchor="middle">7</text>
-      </g>
+      <!-- ===== CONNECTING LINES ===== -->
+      <path class="map-line gold optional" d="M190,120 C280,220 400,330 500,430" />
+      <path class="map-line red optional" d="M500,70 C500,190 500,310 500,430" />
+      <path class="map-line d draw" d="M500,430 C600,350 720,260 830,180" />
+      <path class="map-line seven draw" d="M500,430 C620,432 750,436 870,440" />
+      <path class="map-line seven draw" d="M870,440 C905,480 935,530 960,570" />
+      <path class="map-line blue draw" d="M500,430 C380,410 260,385 150,360" />
+      <path class="map-line blue draw" d="M150,360 C175,325 200,280 230,240" />
+      <path class="map-line green draw" d="M500,430 C380,500 260,600 170,680" />
+      <path class="map-line trunk draw" d="M500,430 C505,550 512,670 520,790" />
+      <path class="map-line d draw" d="M520,790 C450,820 370,845 300,870" />
+      <path class="map-line blue draw" d="M520,790 C480,840 445,885 410,920" />
+      <path class="map-line green draw" d="M520,790 C560,840 595,885 630,920" />
+      <path class="map-line green draw" d="M520,790 C590,820 670,845 740,870" />
 
-      <!-- LGA node -->
+      <!-- ===== TRAIN-LINE BULLETS ===== -->
+      <g class="bullet-inline"><circle cx="665" cy="305" r="16" fill="#FF6319"/><text x="665" y="310" text-anchor="middle">D</text></g>
+      <g class="bullet-inline"><circle cx="685" cy="435" r="16" fill="#B933AD"/><text x="685" y="440" text-anchor="middle">7</text></g>
+      <g class="bullet-inline"><circle cx="325" cy="395" r="16" fill="#0039A6"/><text x="325" y="400" text-anchor="middle">BC</text></g>
+      <g class="bullet-inline"><circle cx="335" cy="555" r="16" fill="#00933C"/><text x="335" y="560" text-anchor="middle">45</text></g>
+      <g class="bullet-inline"><circle cx="500" cy="250" r="16" fill="#EE352E"/><text x="500" y="255" text-anchor="middle">2</text></g>
+      <g class="bullet-inline small"><circle cx="410" cy="830" r="13" fill="#FF6319"/><text x="410" y="834" text-anchor="middle">F</text></g>
+      <g class="bullet-inline small"><circle cx="465" cy="858" r="13" fill="#0039A6"/><text x="465" y="862" text-anchor="middle">AC</text></g>
+      <g class="bullet-inline small"><circle cx="575" cy="858" r="13" fill="#00933C"/><text x="575" y="862" text-anchor="middle">6</text></g>
+      <g class="bullet-inline small"><circle cx="630" cy="830" r="13" fill="#00933C"/><text x="630" y="834" text-anchor="middle">456</text></g>
+
+      <!-- ===== NODES ===== -->
       <g class="map-node" data-scroll="#transit" data-route="lga">
-        <circle class="stop" cx="140" cy="80" r="26"/>
-        <text class="icon" x="140" y="88" text-anchor="middle">✈</text>
-        <text x="140" y="125" text-anchor="middle">LGA</text>
+        <circle class="stop" cx="190" cy="120" r="24"/>
+        <text class="icon" x="190" y="128" text-anchor="middle">✈</text>
+        <text x="190" y="160" text-anchor="middle">LGA</text>
       </g>
 
-      <!-- Hub node -->
+      <g class="map-node" data-scroll="#see" data-seehood="Bronx">
+        <circle class="stop" cx="500" cy="70" r="22" stroke="#EE352E"/>
+        <text class="icon" x="500" y="78" text-anchor="middle">🦁</text>
+        <text x="500" y="108" text-anchor="middle">BRONX</text>
+        <text x="500" y="124" text-anchor="middle">ZOO</text>
+      </g>
+
       <g class="map-node" data-scroll="#snapshot">
-        <circle class="stop" cx="400" cy="190" r="30" stroke="#D4A537"/>
-        <text class="icon" x="400" y="198" text-anchor="middle">★</text>
-        <text x="400" y="238" text-anchor="middle">MARRIOTT</text>
-        <text x="400" y="255" text-anchor="middle">MARQUIS</text>
+        <circle class="stop" cx="500" cy="430" r="32" stroke="#D4A537"/>
+        <text class="icon" x="500" y="438" text-anchor="middle">★</text>
+        <text x="500" y="478" text-anchor="middle">MARRIOTT</text>
+        <text x="500" y="494" text-anchor="middle">MARQUIS</text>
       </g>
 
-      <!-- Yankee Stadium node -->
       <g class="map-node" data-scroll="#transit" data-route="yankees">
-        <circle class="stop" cx="660" cy="100" r="28" stroke="#FF6319"/>
-        <text class="icon" x="660" y="108" text-anchor="middle">⚾</text>
-        <text x="660" y="146" text-anchor="middle">YANKEE</text>
-        <text x="660" y="163" text-anchor="middle">STADIUM</text>
+        <circle class="stop" cx="830" cy="180" r="28" stroke="#FF6319"/>
+        <text class="icon" x="830" y="188" text-anchor="middle">⚾</text>
+        <text x="830" y="224" text-anchor="middle">YANKEE</text>
+        <text x="830" y="240" text-anchor="middle">STADIUM</text>
       </g>
 
-      <!-- US Open node -->
       <g class="map-node" data-scroll="#transit" data-route="open">
-        <circle class="stop" cx="660" cy="300" r="28" stroke="#B933AD"/>
-        <text class="icon" x="660" y="308" text-anchor="middle">🎾</text>
-        <text x="660" y="346" text-anchor="middle">US OPEN</text>
+        <circle class="stop" cx="870" cy="440" r="28" stroke="#B933AD"/>
+        <text class="icon" x="870" y="448" text-anchor="middle">🎾</text>
+        <text x="870" y="484" text-anchor="middle">US OPEN</text>
+      </g>
+
+      <g class="map-node sub" data-scroll="#eat" data-hood="Flushing">
+        <circle class="stop" cx="960" cy="570" r="20" stroke="#B933AD"/>
+        <text class="icon" x="960" y="577" text-anchor="middle">🥟</text>
+        <text x="960" y="604" text-anchor="middle">FLUSHING</text>
+        <text x="960" y="618" text-anchor="middle">FOOD</text>
+      </g>
+
+      <g class="map-node" data-scroll="#eat" data-hood="Upper West Side" data-seehood="Upper West Side">
+        <circle class="stop" cx="150" cy="360" r="28" stroke="#0039A6"/>
+        <text class="icon" x="150" y="368" text-anchor="middle">🦕</text>
+        <text x="150" y="404" text-anchor="middle">AMNH</text>
+      </g>
+
+      <g class="map-node sub" data-scroll="#see" data-seehood="Upper West Side">
+        <circle class="stop" cx="230" cy="240" r="18" stroke="#0039A6"/>
+        <text class="icon" x="230" y="246" text-anchor="middle">🌳</text>
+        <text x="230" y="271" text-anchor="middle">CENTRAL</text>
+        <text x="230" y="284" text-anchor="middle">PARK</text>
+      </g>
+
+      <g class="map-node" data-scroll="#eat" data-hood="Battery Park" data-seehood="Downtown">
+        <circle class="stop" cx="170" cy="680" r="28" stroke="#00933C"/>
+        <text class="icon" x="170" y="688" text-anchor="middle">🗽</text>
+        <text x="170" y="724" text-anchor="middle">BATTERY</text>
+        <text x="170" y="740" text-anchor="middle">PARK</text>
+      </g>
+
+      <g class="map-node" data-scroll="#eat" data-hood="Worth the Trip">
+        <circle class="stop" cx="520" cy="790" r="26" stroke="#D4A537"/>
+        <text class="icon" x="520" y="797" text-anchor="middle">🍽</text>
+        <text x="520" y="831" text-anchor="middle">WORTH THE</text>
+        <text x="520" y="847" text-anchor="middle">TRIP</text>
+      </g>
+
+      <g class="map-node sub" data-scroll="#eat" data-hood="Worth the Trip">
+        <circle class="stop" cx="300" cy="870" r="16" stroke="#FF6319"/>
+        <text class="icon" x="300" y="876" text-anchor="middle">🥪</text>
+        <text x="300" y="899" text-anchor="middle">KATZ'S</text>
+      </g>
+
+      <g class="map-node sub" data-scroll="#eat" data-hood="Worth the Trip">
+        <circle class="stop" cx="410" cy="920" r="16" stroke="#0039A6"/>
+        <text class="icon" x="410" y="926" text-anchor="middle">🍕</text>
+        <text x="410" y="949" text-anchor="middle">VILLAGE</text>
+        <text x="410" y="961" text-anchor="middle">PIZZA</text>
+      </g>
+
+      <g class="map-node sub" data-scroll="#eat" data-hood="Worth the Trip">
+        <circle class="stop" cx="630" cy="920" r="16" stroke="#00933C"/>
+        <text class="icon" x="630" y="926" text-anchor="middle">🍕</text>
+        <text x="630" y="949" text-anchor="middle">NOLITA</text>
+        <text x="630" y="961" text-anchor="middle">PIZZA</text>
+      </g>
+
+      <g class="map-node sub" data-scroll="#eat" data-hood="Worth the Trip">
+        <circle class="stop" cx="740" cy="870" r="16" stroke="#00933C"/>
+        <text class="icon" x="740" y="876" text-anchor="middle">🍨</text>
+        <text x="740" y="899" text-anchor="middle">ICE CREAM</text>
       </g>
     </svg>
   </div>
@@ -608,7 +692,7 @@
 <section class="section" id="eat">
   <div class="section-head">
     <h2>Where to Eat</h2>
-    <span class="section-tag" id="eatCount">27 spots</span>
+    <span class="section-tag" id="eatCount">43 spots</span>
   </div>
   <p class="lede">Filter by neighborhood — each card shows the subway line to ride, or a walk tag if it's an easy stroll from the hotel.</p>
   <div class="filter-row" id="eatFilters"></div>
@@ -650,6 +734,7 @@ const LINE_COLOR = {
   'A':'blue','C':'blue','E':'blue',
   'B':'orange','D':'orange','F':'orange','M':'orange',
   'N':'yellow','Q':'yellow','R':'yellow','W':'yellow',
+  'J':'brown','Z':'brown',
   'S':'grey'
 };
 
@@ -661,6 +746,14 @@ const restaurants = [
   {name:"Sugar Factory", hood:"Times Square", walk:true, price:"$$$", type:"American / dessert", desc:"Over-the-top milkshakes and candy-themed decor — exciting for kids, though reviews are mixed on value.", tip:"Treat it as a special dessert stop rather than a full dinner."},
   {name:"Times Square Diner & Grill", hood:"Times Square", walk:true, price:"$", type:"Diner", desc:"No-frills breakfast spot a few blocks from the hotel — big portions, fast, reasonable prices.", tip:"Good option the morning you head to the US Open."},
   {name:"Joe's Pizza (Broadway)", hood:"Times Square", walk:true, price:"$", type:"Pizza", desc:"The classic NY slice experience, right in the Theater District.", tip:"Expect a line but it moves fast — order-and-go rather than sit-down."},
+  {name:"Pop's Pizza – Times Square", hood:"Times Square", walk:true, price:"$$", type:"Pizza", desc:"A newer, extremely well-reviewed spot (4.9 rating) with thin, crispy crust pies.", tip:"A good second option if Joe's line is out the door."},
+  {name:"Vito's Slices and Ices", hood:"Times Square", walk:true, price:"$", type:"Pizza", desc:"Thin slice, chewy crust, Italian ices alongside — a few blocks further west.", tip:"Also has vegan and gluten-free pies if anyone needs them."},
+  {name:"All'Antico Vinaio", hood:"Times Square", walk:true, price:"$$", type:"Italian sandwiches", desc:"An outpost of the famous Florence sandwich shop — thick focaccia stuffed with things like mortadella and pistachio cream.", tip:"Sandwiches are large enough to split. Expect a line midday."},
+  {name:"787 Coffee", hood:"Times Square", walk:true, price:"$$", type:"Coffee", desc:"A tiny walk-up window right in the Theater District — coffee served in a distinctive paper bag.", tip:"Good for a quick caffeine stop between sights."},
+  {name:"Le Parisien Bakery", hood:"Times Square", walk:true, price:"$$", type:"French bakery & coffee", desc:"A proper French bakery-café — excellent croissants and espresso, open until midnight.", tip:"A nice slower breakfast option before a big day."},
+  {name:"Bibble & Sip", hood:"Times Square", walk:true, price:"$$", type:"Coffee & pastries", desc:"Known for matcha drinks and elaborate pastries — the matcha cream puff is the signature item.", tip:"Small space, but a fun stop if the kids want something sweet."},
+  {name:"Anita La Mamma del Gelato", hood:"Times Square", walk:true, price:"$", type:"Gelato", desc:"A large, high-quality gelato counter right in Times Square with a huge flavor selection.", tip:"They offer free tastes before you commit — good for picky eaters."},
+  {name:"Gelatoville", hood:"Times Square", walk:true, price:"$$", type:"Gelato", desc:"A few blocks west, similarly high-quality, with fun flavors like baklava and Dubai chocolate.", tip:"Plenty of seating if you want to sit and cool off."},
 
   {name:"Billy's Sports Bar", hood:"Yankee Stadium", lines:["4","B","D"], price:"$$", type:"Sports bar", desc:"The go-to pre-game spot, literally across from the stadium — high energy, DJ, wings and fries.", tip:"Arrive a few hours before first pitch if you want a table."},
   {name:"Porto Salvo", hood:"Yankee Stadium", lines:["4","B","D"], price:"$$", type:"Italian / pizza / seafood", desc:"A more low-key, sit-down option a short walk from the stadium with a calmer atmosphere.", tip:"Reviewers say the pizza is a hit with kids."},
@@ -678,14 +771,22 @@ const restaurants = [
   {name:"Fred's", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"American", desc:"Casual neighborhood spot, notably accommodating for food allergies.", tip:"Kid-friendly mac and cheese on the menu."},
   {name:"Playa Betty's", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Mexican", desc:"Lively, colorful Mexican spot with outdoor seating in good weather.", tip:"Tacos, elote (Mexican street corn), solid margaritas for the adults."},
   {name:"Carmine's (Upper West Side)", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Italian, family-style", desc:"Same reliable family-style format as the Times Square location, uptown.", tip:"Good if you're spending the day at the Museum of Natural History or Central Park."},
+  {name:"Sote Coffee Roasters", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Coffee", desc:"A small-batch roaster right on the Upper West Side — the espresso is a standout.", tip:"A good stop on the way to or from the Museum of Natural History."},
+  {name:"Lily's Roasters", hood:"Upper West Side", lines:["B","C"], price:"$$", type:"Coffee", desc:"A cozy, vintage-styled café a bit further north with well-reviewed cortados and pastries.", tip:"Good for a sit-down break if you want to rest your feet."},
 
   {name:"Hudson Eats", hood:"Battery Park", lines:["4","5","R","W"], price:"$", type:"Food hall", desc:"Wide variety of vendors from BBQ to Mexican to bakery, with harborside seating.", tip:"Great with kids because everyone can pick something different."},
   {name:"P.J. Clarke's on the Hudson", hood:"Battery Park", lines:["4","5","R","W"], price:"$$", type:"American / burgers", desc:"Classic burgers right on the marina; reliably good food.", tip:"Can get loud at peak times."},
   {name:"Mezze on the River", hood:"Battery Park", lines:["4","5","R","W"], price:"$$", type:"Mediterranean / Greek", desc:"Waterfront Mediterranean with river views — a nice change of pace.", tip:"A calmer option than the more typical American/Italian choices nearby."},
+  {name:"NOMAD", hood:"Battery Park", lines:["A","C"], price:"$$", type:"Sandwiches", desc:"A small, well-loved counter-service sandwich shop a short walk from the ferry terminal.", tip:"The Cuban chicken panini and chicken katsu sandwich are the standouts."},
 
-  {name:"John's of Bleecker Street", hood:"Essential Pizza", lines:["A","C","E"], price:"$$", type:"Pizza (West Village)", desc:"Coal-fired, whole pies only (no slices) — classic and consistently excellent.", tip:"Near W 4th St station."},
-  {name:"Lombardi's", hood:"Essential Pizza", lines:["6"], price:"$$", type:"Pizza (Nolita)", desc:"Widely credited as America's first pizzeria (1905) — historic atmosphere.", tip:"Cash-only culture; near Spring St station."},
-  {name:"NY Pizza Suprema", hood:"Essential Pizza", lines:["A","C","E"], price:"$", type:"Pizza (near Penn Station)", desc:"A real neighborhood favorite since 1964, excellent value.", tip:"Near 34 St–Penn Station — good if you're near Madison Square Garden."}
+  {name:"John's of Bleecker Street", hood:"Worth the Trip", lines:["A","C","E"], price:"$$", type:"Pizza (West Village)", desc:"Coal-fired, whole pies only (no slices) — classic and consistently excellent.", tip:"Near W 4th St station."},
+  {name:"Lombardi's", hood:"Worth the Trip", lines:["6"], price:"$$", type:"Pizza (Nolita)", desc:"Widely credited as America's first pizzeria (1905) — historic atmosphere.", tip:"Cash-only culture; near Spring St station."},
+  {name:"NY Pizza Suprema", hood:"Worth the Trip", lines:["A","C","E"], price:"$", type:"Pizza (near Penn Station)", desc:"A real neighborhood favorite since 1964, excellent value.", tip:"Near 34 St–Penn Station — good if you're near Madison Square Garden."},
+  {name:"Nuovo York Pizza", hood:"Worth the Trip", lines:["6"], price:"$$", type:"Pizza (East Village)", desc:"A highly-rated newer favorite — the spinach mushroom slice is a standout.", tip:"Near Astor Pl station."},
+  {name:"Katz's Delicatessen", hood:"Worth the Trip", lines:["F"], price:"$$", type:"Deli (Lower East Side)", desc:"The most famous deli in New York, open since 1888 — the pastrami sandwich is the reason to go, hand-carved and stacked absurdly high.", tip:"One sandwich comfortably feeds two. Expect a line and a slightly chaotic order-by-ticket system."},
+  {name:"Joey Roses", hood:"Worth the Trip", lines:["F","J","Z"], price:"$", type:"Subs & sandwiches (Lower East Side)", desc:"A laid-back sub shop a short walk from Katz's — the roast beef sandwich gets consistent praise.", tip:"A good, more casual second option in the same neighborhood."},
+  {name:"Caffè Panna", hood:"Worth the Trip", lines:["4","5","6"], price:"$$", type:"Ice cream (Union Square/Gramercy)", desc:"An upscale ice cream counter with a rotating daily flavor menu made in-house.", tip:"Coffee and banana flavors are particular standouts — a bit of a detour but worth it."},
+  {name:"Sundaes and Cones", hood:"Worth the Trip", lines:["6"], price:"$$", type:"Ice cream (East Village)", desc:"A longtime East Village favorite with both classic and adventurous flavors.", tip:"Green tea, black sesame, and matcha rose are local favorites."}
 ];
 
 const attractions = [
@@ -804,11 +905,19 @@ document.querySelectorAll('.day-tab').forEach(tab => {
 });
 
 /* ---------------- SCROLL NAV ---------------- */
-function goTo(targetSel, route){
+function goTo(targetSel, opts={}){
   document.querySelector(targetSel).scrollIntoView({behavior:'smooth', block:'start'});
-  if(route){
-    const tab = document.querySelector(`.route-tab[data-route="${route}"]`);
+  if(opts.route){
+    const tab = document.querySelector(`.route-tab[data-route="${opts.route}"]`);
     if(tab) tab.click();
+  }
+  if(opts.eatHood){
+    const chip = document.querySelector(`#eatFilters .chip[data-hood="${opts.eatHood}"]`);
+    if(chip) chip.click();
+  }
+  if(opts.seeHood){
+    const chip = document.querySelector(`#seeFilters .chip[data-hood="${opts.seeHood}"]`);
+    if(chip) chip.click();
   }
 }
 document.querySelectorAll('.quicknav button').forEach(btn => {
@@ -819,7 +928,11 @@ document.querySelectorAll('.quicknav button').forEach(btn => {
   });
 });
 document.querySelectorAll('.map-node').forEach(node => {
-  node.addEventListener('click', () => goTo(node.dataset.scroll, node.dataset.route));
+  node.addEventListener('click', () => goTo(node.dataset.scroll, {
+    route: node.dataset.route,
+    eatHood: node.dataset.hood,
+    seeHood: node.dataset.seehood
+  }));
 });
 
 /* highlight active quicknav on scroll */
